@@ -1,6 +1,4 @@
 @echo off
-:: O Launcher já valida o ADM, mas mantemos por segurança
-net session >nul 2>&1 || (powershell start -verb runas '%0' & exit /b)
 
 chcp 65001 >nul
 mode con: cols=90 lines=35
