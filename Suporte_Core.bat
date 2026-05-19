@@ -115,17 +115,34 @@ goto menu_drivers
 set "PASTA_DRV=%DL_DIR%\%NOME_DRIVER%"
 if exist "%PASTA_DRV%" rd /s /q "%PASTA_DRV%"
 mkdir "%PASTA_DRV%"
+
 call :barra 40 "Baixando Driver %NOME_DRIVER%..."
 curl -L -o "%DL_DIR%\%ARQUIVO_DRV%" "%GIT_RAW%/drivers/%ARQUIVO_DRV%"
 if not exist "%DL_DIR%\%ARQUIVO_DRV%" (
     echo [ERRO] Falha ao baixar o arquivo.
     pause & goto menu_drivers
 )
-call :barra 80 "Extraindo arquivos..."
+
+call :barra 70 "Extraindo arquivos do instalador..."
 powershell -Command "Expand-Archive -Path '%DL_DIR%\%ARQUIVO_DRV%' -DestinationPath '%PASTA_DRV%' -Force"
 del /f /q "%DL_DIR%\%ARQUIVO_DRV%"
-call :barra 95 "Abrindo instalador..."
-explorer.exe "%PASTA_DRV%"
+
+call :barra 90 "Iniciando instalador do driver..."
+:: Entra na pasta do driver, procura por qualquer .exe ou .msi e o executa
+pushd "%PASTA_DRV%"
+set "INSTALADOR_FOUND="
+for %%f in (*.exe *.msi) do (
+    set "INSTALADOR_FOUND=%%f"
+)
+
+if defined INSTALADOR_FOUND (
+    start "" "%INSTALADOR_FOUND%"
+) else (
+    echo [AVISO] O instalador executavel nao foi encontrado dentro do pacote.
+    echo Abrindo a pasta para verificacao manual...
+    explorer.exe "%PASTA_DRV%"
+)
+popd
 goto menu_drivers
 
 :dns
