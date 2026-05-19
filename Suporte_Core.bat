@@ -1,5 +1,17 @@
 @echo off
 
+:: =========================================================================
+:: 1. VERIFICAÇÃO DE PRIVILÉGIOS DE ADMINISTRADOR (Modo Compatível)
+:: =========================================================================
+fsutil dirty query %systemdrive% >nul 2>&1
+if %errorlevel% neq 0 (
+    powershell -Command "Start-Process -FilePath '%comspec%' -ArgumentList '/c \"\"%~f0\"\"' -Verb RunAs"
+    exit /b
+)
+
+:: =========================================================================
+:: 2. CONFIGURAÇÃO DE AMBIENTE E VARIÁVEIS
+:: =========================================================================
 chcp 65001 >nul
 mode con: cols=90 lines=35
 color 1F
@@ -8,13 +20,14 @@ title SUPORTE EXPRESSO DELIVERY - PRO
 :: Senha de Acesso
 set "SENHA_MESTRA=Expresso2026"
 
-:: URLs e Diretórios
+:: URLs de Download
 set "GIT_RAW=https://raw.githubusercontent.com/viniciuspania/suporteED/main"
 set "JAVA_URL=https://javadl.oracle.com/webapps/download/AutoDL?BundleId=253195_f7fe8e644f724108bdb54139381e29a7"
 set "QZ_URL=https://github.com/qzind/tray/releases/download/v2.2.4/qz-tray-2.2.4.exe"
 set "URL_64=https://expressodelivery.com.br/downloads/gerenciadorqz_64.zip"
 set "URL_32=https://expressodelivery.com.br/downloads/gerenciadorqz_32.zip"
 set "WARP_URL=https://downloads.cloudflareclient.com/v1/download/windows/ga"
+
 set "DL_DIR=%TEMP%\ExpressoDownloads"
 if not exist "%DL_DIR%" mkdir "%DL_DIR%"
 
@@ -24,9 +37,9 @@ echo =======================================================================
 echo              ACESSO RESTRITO - SUPORTE EXPRESSO DELIVERY
 echo =======================================================================
 echo.
-echo Digite a senha de acesso:
+:: Limpa a variável antes de ler para impedir que o 'Enter' fantasma passe direto
 set "pass="
-for /f "delims=" %%i in ('powershell -Command "$p = read-host -AsSecureString; [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($p))"') do set "pass=%%i"
+set /p "pass=Digite a senha de acesso: "
 
 if "%pass%"=="%SENHA_MESTRA%" goto menu
 echo.
