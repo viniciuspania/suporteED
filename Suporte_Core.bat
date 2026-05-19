@@ -26,9 +26,7 @@ echo =======================================================================
 echo              ACESSO RESTRITO - SUPORTE EXPRESSO DELIVERY
 echo =======================================================================
 echo.
-echo Digite a senha de acesso:
-set "pass="
-for /f "delims=" %%i in ('powershell -Command "$p = read-host -AsSecureString; [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($p))"') do set "pass=%%i"
+set /p "pass=Digite a senha de acesso: "
 
 if "%pass%"=="%SENHA_MESTRA%" goto menu
 echo.
