@@ -17,9 +17,6 @@ mode con: cols=90 lines=35
 color 1F
 title SUPORTE EXPRESSO DELIVERY - PRO
 
-:: Senha de Acesso
-set "SENHA_MESTRA=Expresso2026"
-
 :: URLs de Download
 set "GIT_RAW=https://raw.githubusercontent.com/viniciuspania/suporteED/main"
 set "JAVA_URL=https://javadl.oracle.com/webapps/download/AutoDL?BundleId=253195_f7fe8e644f724108bdb54139381e29a7"
@@ -30,22 +27,6 @@ set "WARP_URL=https://downloads.cloudflareclient.com/v1/download/windows/ga"
 
 set "DL_DIR=%TEMP%\ExpressoDownloads"
 if not exist "%DL_DIR%" mkdir "%DL_DIR%"
-
-:login
-cls
-echo =======================================================================
-echo              ACESSO RESTRITO - SUPORTE EXPRESSO DELIVERY
-echo =======================================================================
-echo.
-:: Limpa a variável antes de ler para impedir que o 'Enter' fantasma passe direto
-set "pass="
-set /p "pass=Digite a senha de acesso: "
-
-if "%pass%"=="%SENHA_MESTRA%" goto menu
-echo.
-echo [ERRO] Senha Incorreta!
-timeout /t 2 >nul
-goto login
 
 :menu
 cls
