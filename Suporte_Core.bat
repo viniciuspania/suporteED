@@ -26,7 +26,9 @@ echo =======================================================================
 echo              ACESSO RESTRITO - SUPORTE EXPRESSO DELIVERY
 echo =======================================================================
 echo.
-set /p "pass=Digite a senha de acesso: "
+echo Digite a senha de acesso:
+set "pass="
+for /f "delims=" %%i in ('powershell -Command "$p = read-host -AsSecureString; [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($p))"') do set "pass=%%i"
 
 if "%pass%"=="%SENHA_MESTRA%" goto menu
 echo.
@@ -235,13 +237,22 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-Printer | Select-Obj
 goto menu
 
 :teste_rede
-set /p "alvo=Alvo (Ex: google.com): "
+cls
+set /p "alvo=Digite a URL ou IP para testar (Ex: 8.8.8.8 ou google.com): "
+call :barra 50 "Testando rede e gerando Log..."
 set "LOG_REDE=%USERPROFILE%\Desktop\Log_Rede_Expresso.txt"
-echo --- CONFIG --- > "%LOG_REDE%"
+echo === TESTE DE REDE GERADO EM %date% as %time% === > "%LOG_REDE%"
+echo. >> "%LOG_REDE%"
+echo --- CONFIG DA REDE --- >> "%LOG_REDE%"
 ipconfig /all >> "%LOG_REDE%"
+echo. >> "%LOG_REDE%"
 echo --- PING --- >> "%LOG_REDE%"
-ping %alvo% -n 5 >> "%LOG_REDE%"
-echo Log salvo no Desktop!
+ping %alvo% -n 10 >> "%LOG_REDE%"
+echo. >> "%LOG_REDE%"
+echo --- TRACERT --- >> "%LOG_REDE%"
+tracert %alvo% >> "%LOG_REDE%"
+
+echo [SUCESSO] Teste concluido. Log salvo em: "%LOG_REDE%"
 pause & goto menu
 
 :coletar_logs
